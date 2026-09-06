@@ -104,3 +104,22 @@ void mezclarTipos(char tipos[])
 		tipos[posicion] = temporal;
 	}
 }
+
+bool obtenerPieza(Cola &cola, int posicion, Pieza &pieza)
+{
+	if (posicion < 0 || posicion >= cola.cantidad)
+	{
+		return false;
+	}
+	
+	NodoCola *actual = cola.frente;
+	
+	for (int i = 0; i < posicion; i++)
+	{
+		actual = actual->siguiente;
+	}
+	
+	pieza = actual->pieza;
+	
+	return true;
+}
