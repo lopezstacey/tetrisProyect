@@ -7,7 +7,6 @@ void inicializarPieza(Pieza &pieza, char tipo)
 	pieza.columna = 3;
 	pieza.orientacion = 0;
 	
-	// Limpiar las posiciones
 	for (int o = 0; o < 4; o++)
 	{
 		for (int b = 0; b < 4; b++)

@@ -1,30 +1,23 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+
 #include "pieza.h"
+#include "cola.h"
 
 using namespace std;
 
 int main()
 {
-	Pieza pieza;
+	srand(time(nullptr));
 	
-	inicializarPieza(pieza, 'T');
+	Cola cola;
+	inicializarCola(cola);
 	
-	cout << "Pieza: " << pieza.tipo << endl;
+	generarBag(cola);
 	
-	for (int orientacion = 0; orientacion < 4; orientacion++)
-	{
-		cout << endl;
-		cout << "Orientacion " << orientacion << ":" << endl;
-		
-		for (int bloque = 0; bloque < 4; bloque++)
-		{
-			cout << "("
-				<< pieza.bloques[orientacion][bloque][0]
-					<< ", "
-					<< pieza.bloques[orientacion][bloque][1]
-						<< ")" << endl;
-		}
-	}
+	cout << "Tetris iniciado" << endl;
+	cout << "Piezas disponibles: " << cantidadCola(cola) << endl;
 	
 	return 0;
 }
