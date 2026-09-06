@@ -87,7 +87,7 @@ int cantidadCola(Cola &cola)
 
 void mantenerCola(Cola &cola)
 {
-	if (cantidadCola(cola) < 3)
+	if (cantidadCola(cola) <= 3)
 	{
 		generarBag(cola);
 	}

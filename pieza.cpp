@@ -296,3 +296,13 @@ void inicializarPieza(Pieza &pieza, char tipo)
 		pieza.bloques[3][3][1] = 2;
 	}
 }
+
+void rotarPieza(Pieza &pieza)
+{
+	pieza.orientacion++;
+	
+	if (pieza.orientacion >= 4)
+	{
+		pieza.orientacion = 0;
+	}
+}

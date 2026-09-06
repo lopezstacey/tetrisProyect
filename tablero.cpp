@@ -232,3 +232,17 @@ void eliminarFilasCompletas(Tablero &tablero)
 		actual = siguiente;
 	}
 }
+
+bool puedeRotarPieza(Tablero &tablero, Pieza &pieza)
+{
+	Pieza prueba = pieza;
+	
+	prueba.orientacion++;
+	
+	if (prueba.orientacion >= 4)
+	{
+		prueba.orientacion = 0;
+	}
+	
+	return puedeColocarPieza(tablero, prueba);
+}

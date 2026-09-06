@@ -18,26 +18,26 @@ current_source=main.cpp
 path_char=\
 [source]
 path=main.cpp
-cursor=21:18
+cursor=182:36
 open=true
 [source]
 path=pieza.cpp
-cursor=298:0
+cursor=307:1
 [source]
 path=cola.cpp
-cursor=106:0
+cursor=89:26
 [source]
 path=tablero.cpp
-cursor=234:0
+cursor=248:0
 [header]
 path=pieza.h
-cursor=4:1
+cursor=16:30
 [header]
 path=cola.h
-cursor=27:0
+cursor=6:1
 [header]
 path=tablero.h
-cursor=32:0
+cursor=30:53
 [other]
 path=tetrisProyect.zpr
 cursor=27:12
@@ -55,7 +55,7 @@ temp_folder=Debug
 output_file=${TEMP_DIR}\tetrisProyect.exe
 icon_file=
 manifest_file=
-compiling_extra=
+compiling_extra=-I"C:\Program Files (x86)\ZinjaI\mingw32-gcc6\sfml2\include"
 macros=_DEBUG
 warnings_level=2
 warnings_as_errors=0
@@ -65,10 +65,10 @@ std_cpp=c++14
 debug_level=2
 optimization_level=0
 enable_lto=0
-headers_dirs=
-linking_extra=
-libraries_dirs=
-libraries=
+headers_dirs=C:\Program Files (x86)\ZinjaI\mingw32-gcc6\sfml2\include
+linking_extra=-L"C:\Program Files (x86)\ZinjaI\mingw32-gcc6\sfml2\lib"
+libraries_dirs=C:\Program Files (x86)\ZinjaI\mingw32-gcc6\sfml2\lib
+libraries=sfml-window sfml-system sfml-graphics
 libs_to_use=
 strip_executable=0
 console_program=1

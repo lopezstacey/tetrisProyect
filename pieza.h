@@ -14,5 +14,6 @@ struct Pieza
 };
 
 void inicializarPieza(Pieza &pieza, char tipo);
+void rotarPieza(Pieza &pieza);
 
 #endif
