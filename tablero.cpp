@@ -142,3 +142,8 @@ bool moverPiezaAbajo(Tablero &tablero, Pieza &pieza)
 	
 	return false;
 }
+
+void fijarPieza(Tablero &tablero, Pieza &pieza)
+{
+	colocarPieza(tablero, pieza);
+}

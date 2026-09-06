@@ -23,4 +23,5 @@ void colocarPieza(Tablero &tablero, Pieza &pieza);
 bool puedeColocarPieza(Tablero &tablero, Pieza &pieza);
 bool moverPiezaHorizontal(Tablero &tablero, Pieza &pieza, int desplazamiento);
 bool moverPiezaAbajo(Tablero &tablero, Pieza &pieza);
+void fijarPieza(Tablero &tablero, Pieza &pieza);
 #endif
