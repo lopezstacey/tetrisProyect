@@ -24,4 +24,9 @@ bool puedeColocarPieza(Tablero &tablero, Pieza &pieza);
 bool moverPiezaHorizontal(Tablero &tablero, Pieza &pieza, int desplazamiento);
 bool moverPiezaAbajo(Tablero &tablero, Pieza &pieza);
 void fijarPieza(Tablero &tablero, Pieza &pieza);
+bool filaCompleta(NodoFila *fila);
+void eliminarFila(Tablero &tablero, NodoFila *fila);
+void insertarFilaInicio(Tablero &tablero);
+void eliminarFilasCompletas(Tablero &tablero);
+
 #endif

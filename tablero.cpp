@@ -147,3 +147,88 @@ void fijarPieza(Tablero &tablero, Pieza &pieza)
 {
 	colocarPieza(tablero, pieza);
 }
+
+bool filaCompleta(NodoFila *fila)
+{
+	for (int columna = 0; columna < 10; columna++)
+	{
+		if (fila->celdas[columna] == 0)
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+void eliminarFila(Tablero &tablero, NodoFila *fila)
+{
+	if (fila == nullptr)
+	{
+		return;
+	}
+	
+	if (fila->anterior != nullptr)
+	{
+		fila->anterior->siguiente = fila->siguiente;
+	}
+	else
+	{
+		tablero.primera = fila->siguiente;
+	}
+	
+	if (fila->siguiente != nullptr)
+	{
+		fila->siguiente->anterior = fila->anterior;
+	}
+	else
+	{
+		tablero.ultima = fila->anterior;
+	}
+	
+	delete fila;
+	tablero.cantidadFilas--;
+}
+
+void insertarFilaInicio(Tablero &tablero)
+{
+	NodoFila *nueva = new NodoFila;
+	
+	for (int columna = 0; columna < 10; columna++)
+	{
+		nueva->celdas[columna] = 0;
+	}
+	
+	nueva->anterior = nullptr;
+	nueva->siguiente = tablero.primera;
+	
+	if (tablero.primera != nullptr)
+	{
+		tablero.primera->anterior = nueva;
+	}
+	else
+	{
+		tablero.ultima = nueva;
+	}
+	
+	tablero.primera = nueva;
+	tablero.cantidadFilas++;
+}
+
+void eliminarFilasCompletas(Tablero &tablero)
+{
+	NodoFila *actual = tablero.primera;
+	
+	while (actual != nullptr)
+	{
+		NodoFila *siguiente = actual->siguiente;
+		
+		if (filaCompleta(actual))
+		{
+			eliminarFila(tablero, actual);
+			insertarFilaInicio(tablero);
+		}
+		
+		actual = siguiente;
+	}
+}
