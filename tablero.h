@@ -27,7 +27,7 @@ void fijarPieza(Tablero &tablero, Pieza &pieza);
 bool filaCompleta(NodoFila *fila);
 void eliminarFila(Tablero &tablero, NodoFila *fila);
 void insertarFilaInicio(Tablero &tablero);
-void eliminarFilasCompletas(Tablero &tablero);
+int eliminarFilasCompletas(Tablero &tablero);
 bool puedeRotarPieza(Tablero &tablero, Pieza &pieza);
 
 #endif

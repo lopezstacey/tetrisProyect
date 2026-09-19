@@ -215,8 +215,10 @@ void insertarFilaInicio(Tablero &tablero)
 	tablero.cantidadFilas++;
 }
 
-void eliminarFilasCompletas(Tablero &tablero)
+int eliminarFilasCompletas(Tablero &tablero)
 {
+	int filasEliminadas = 0;
+	
 	NodoFila *actual = tablero.primera;
 	
 	while (actual != nullptr)
@@ -227,10 +229,12 @@ void eliminarFilasCompletas(Tablero &tablero)
 		{
 			eliminarFila(tablero, actual);
 			insertarFilaInicio(tablero);
+			filasEliminadas++;
 		}
 		
 		actual = siguiente;
 	}
+	return filasEliminadas;
 }
 
 bool puedeRotarPieza(Tablero &tablero, Pieza &pieza)
