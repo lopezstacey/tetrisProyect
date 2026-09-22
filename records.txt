@@ -1,0 +1,4 @@
+Mateo        | 2700
+Wendy      | 2700
+Stacey         | 1900
+Isaac         | 1200
