@@ -4,7 +4,7 @@
 struct Evento
 {
 	int tipo;
-	float tiempo;
+	float valor;
 };
 
 const int EVENTO_SUBIR_NIVEL = 1;
@@ -29,5 +29,5 @@ void insertarEvento(ColaEventos &cola, Evento evento);
 bool obtenerEvento(ColaEventos &cola, Evento &evento);
 bool colaEventosVacia(ColaEventos &cola);
 int cantidadEventos(ColaEventos &cola);
-
+void limpiarEventos(ColaEventos &cola);
 #endif

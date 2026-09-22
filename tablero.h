@@ -29,5 +29,5 @@ void eliminarFila(Tablero &tablero, NodoFila *fila);
 void insertarFilaInicio(Tablero &tablero);
 int eliminarFilasCompletas(Tablero &tablero);
 bool puedeRotarPieza(Tablero &tablero, Pieza &pieza);
-
+void limpiarTablero(Tablero &tablero);
 #endif

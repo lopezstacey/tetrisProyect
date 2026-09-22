@@ -250,3 +250,17 @@ bool puedeRotarPieza(Tablero &tablero, Pieza &pieza)
 	
 	return puedeColocarPieza(tablero, prueba);
 }
+void limpiarTablero(Tablero &tablero)
+{
+	NodoFila *fila = tablero.primera;
+	
+	while (fila != nullptr)
+	{
+		for (int columna = 0; columna < 10; columna++)
+		{
+			fila->celdas[columna] = 0;
+		}
+		
+		fila = fila->siguiente;
+	}
+}

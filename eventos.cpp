@@ -12,7 +12,7 @@ void insertarEvento(ColaEventos &cola, Evento evento)
 	nuevo->evento = evento;
 	nuevo->siguiente = nullptr;
 	
-	if (cola.frente == nullptr || evento.tiempo < cola.frente->evento.tiempo)
+	if (cola.frente == nullptr || evento.valor < cola.frente->evento.valor)
 	{
 		nuevo->siguiente = cola.frente;
 		cola.frente = nuevo;
@@ -22,7 +22,7 @@ void insertarEvento(ColaEventos &cola, Evento evento)
 		NodoEvento *actual = cola.frente;
 		
 		while (actual->siguiente != nullptr &&
-			   actual->siguiente->evento.tiempo <= evento.tiempo)
+			   actual->siguiente->evento.valor <= evento.valor)
 		{
 			actual = actual->siguiente;
 		}
@@ -60,4 +60,14 @@ bool colaEventosVacia(ColaEventos &cola)
 int cantidadEventos(ColaEventos &cola)
 {
 	return cola.cantidad;
+}
+void limpiarEventos(ColaEventos &cola)
+{
+	while (cola.frente != nullptr)
+	{
+		NodoEvento *auxiliar = cola.frente;
+		cola.frente = auxiliar->siguiente;
+		delete auxiliar;
+	}
+	cola.cantidad = 0;
 }

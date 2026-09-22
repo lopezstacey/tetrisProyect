@@ -123,3 +123,15 @@ bool obtenerPieza(Cola &cola, int posicion, Pieza &pieza)
 	
 	return true;
 }
+void limpiarCola(Cola &cola)
+{
+	while (cola.frente != nullptr)
+	{
+		NodoCola *auxiliar = cola.frente;
+		cola.frente = auxiliar->siguiente;
+		delete auxiliar;
+	}
+	
+	cola.final = nullptr;
+	cola.cantidad = 0;
+}

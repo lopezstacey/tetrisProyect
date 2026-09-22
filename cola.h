@@ -25,4 +25,5 @@ int cantidadCola(Cola &cola);
 void mantenerCola(Cola &cola);
 void mezclarTipos(char tipos[]);
 bool obtenerPieza(Cola &cola, int posicion, Pieza &pieza);
+void limpiarCola(Cola &cola);
 #endif

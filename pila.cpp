@@ -53,3 +53,14 @@ bool pilaVacia(Pila &pila)
 {
 	return pila.tope == nullptr;
 }
+void limpiarPila(Pila &pila)
+{
+	while (pila.tope != nullptr)
+	{
+		NodoPila *auxiliar = pila.tope;
+		pila.tope = auxiliar->siguiente;
+		delete auxiliar;
+	}
+	
+	pila.cantidad = 0;
+}
