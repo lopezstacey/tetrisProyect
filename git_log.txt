@@ -1,0 +1,14 @@
+* 950bc28 (HEAD -> main, origin/main, origin/HEAD) Create README.md
+* f3c508b Update tetrisProyect.zpr
+* e221171 implemento cambios finales
+* 15595d4 Create records.txt
+* d10d7f1 Implementa replay y correcciones de otras clases
+* a131622 Implementa eventos, juego y cambios en el main
+* 9ece1a2 Implementa interfaz, pila y arregla cosas
+* 7272af4 Implementa rotacion y SFML
+* bdb46b8 Add SFML rendering and obtenerPieza to queue
+* 84ecb79 Implementa eliminacion de filas completas
+* a7a003b Implementa fijacion de piezas
+* 7eea1f3 Implementa movimiento y colision de piezas
+* 393f536 Implementa cola FIFO y generacion de piezas por bags
+* 671b192 Implementa estructura de piezas y orientaciones
