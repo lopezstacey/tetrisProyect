@@ -31,6 +31,7 @@ struct ListaReplay
 
 void inicializarReplay(ListaReplay &lista);
 void guardarEstadoReplay(ListaReplay &lista, EstadoReplay estado);
+void eliminarEstadosSiguientes(ListaReplay &lista);
 void iniciarReplay(ListaReplay &lista);
 bool avanzarReplay(ListaReplay &lista, EstadoReplay &estado);
 bool retrocederReplay(ListaReplay &lista, EstadoReplay &estado);

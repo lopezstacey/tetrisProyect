@@ -161,6 +161,24 @@ bool filaCompleta(NodoFila *fila)
 	return true;
 }
 
+int obtenerFilasCompletas(Tablero &tablero, int filas[])
+{
+	int cantidad = 0;
+	
+	for (int i = 0; i < 20; i++)
+	{
+		NodoFila *fila = obtenerFila(tablero, i);
+		
+		if (fila != nullptr && filaCompleta(fila))
+		{
+			filas[cantidad] = i;
+			cantidad++;
+		}
+	}
+	
+	return cantidad;
+}
+
 void eliminarFila(Tablero &tablero, NodoFila *fila)
 {
 	if (fila == nullptr)

@@ -44,7 +44,8 @@ void dibujarPanelPuntaje(RenderWindow &ventana);
 void dibujarPanelControles(RenderWindow &ventana, bool modoReplay);
 void dibujarSiguientes(RenderWindow &ventana, Cola &cola);
 void dibujarHold(RenderWindow &ventana, Pila &pilaHold);
-void dibujarTablero(RenderWindow &ventana, Tablero &tablero, Pieza &piezaActual, bool tableroPeligroActivo);
+bool filaEstaAnimando(int fila, int filasAnimando[], int cantidadFilasAnimando);
+void dibujarTablero(RenderWindow &ventana, Tablero &tablero, Pieza &piezaActual, bool tableroPeligroActivo, int filasAnimando[], int cantidadFilasAnimando, bool filasVisibles);
 void dibujarGameOver(RenderWindow &ventana);
 bool botonReplayPresionado(int x, int y);
 bool botonRegresarPresionado(int x, int y, int botonX, int botonY);
@@ -68,4 +69,6 @@ void dibujarBotonPausa(RenderWindow &ventana, bool pausado);
 bool botonPausaPresionado(int x, int y);
 void dibujarComoJugar(RenderWindow &ventana);
 void dibujarInformacion(RenderWindow &ventana);
+void dibujarPausa(RenderWindow &ventana);
+bool botonContinuarPausaPresionado(int x, int y);
 #endif

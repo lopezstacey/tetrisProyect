@@ -131,7 +131,7 @@ void dibujarPanelControles(RenderWindow &ventana, bool modoReplay)
 	else
 	{
 		dibujarTexto(ventana, " <-  Mover     ->  Mover     ^  Rotar", PANEL_X + 20, CONTROLES_Y + 12, 18);
-		dibujarTexto(ventana, "v  Bajar          C  Hold", PANEL_X + 20, CONTROLES_Y + 48, 18);
+		dibujarTexto(ventana, "v  Bajar    C  Hold     A  Undo    D redo", PANEL_X + 20, CONTROLES_Y + 48, 18);
 	}
 }
 
@@ -161,19 +161,41 @@ void dibujarHold(RenderWindow &ventana, Pila &pilaHold)
 	}
 }
 
-void dibujarTablero(RenderWindow &ventana, Tablero &tablero, Pieza &piezaActual, bool tableroPeligroActivo)
+bool filaEstaAnimando(int fila, int filasAnimando[], int cantidadFilasAnimando)
+{
+	for (int i = 0; i < cantidadFilasAnimando; i++)
+	{
+		if (filasAnimando[i] == fila)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void dibujarTablero(RenderWindow &ventana, Tablero &tablero, Pieza &piezaActual, bool tableroPeligroActivo, int filasAnimando[], int cantidadFilasAnimando, bool filasVisibles)
 {
 	for (int fila = 0; fila < 20; fila++)
 	{
 		NodoFila *nodo = obtenerFila(tablero, fila);
 		
+		bool estaAnimando = filaEstaAnimando(fila, filasAnimando, cantidadFilasAnimando);
+		
 		for (int columna = 0; columna < 10; columna++)
 		{
 			RectangleShape celda(Vector2f(TAMANO_CELDA - 1, TAMANO_CELDA - 1));
 			
-			celda.setPosition(TABLERO_X + columna * TAMANO_CELDA, TABLERO_Y + fila * TAMANO_CELDA);
+			celda.setPosition(
+							  TABLERO_X + columna * TAMANO_CELDA,
+							  TABLERO_Y + fila * TAMANO_CELDA
+							  );
 			
-			if (nodo->celdas[columna] == 0)
+			if (estaAnimando && !filasVisibles)
+			{
+				celda.setFillColor(Color(15, 15, 15));
+			}
+			else if (nodo->celdas[columna] == 0)
 			{
 				if (tableroPeligroActivo && fila < 3)
 				{
@@ -193,7 +215,15 @@ void dibujarTablero(RenderWindow &ventana, Tablero &tablero, Pieza &piezaActual,
 		}
 	}
 	
-	dibujarPieza(ventana, piezaActual, TABLERO_X + piezaActual.columna * TAMANO_CELDA, TABLERO_Y + piezaActual.fila * TAMANO_CELDA);
+	if (cantidadFilasAnimando == 0)
+	{
+		dibujarPieza(
+					 ventana,
+					 piezaActual,
+					 TABLERO_X + piezaActual.columna * TAMANO_CELDA,
+					 TABLERO_Y + piezaActual.fila * TAMANO_CELDA
+					 );
+	}
 }
 
 void dibujarGameOver(RenderWindow &ventana)
@@ -548,4 +578,31 @@ void dibujarInformacion(RenderWindow &ventana)
 	dibujarTexto(ventana, "2026", 555, 550, 28);
 	
 	dibujarBotonRegresar(ventana, 500, 750);
+}
+
+void dibujarPausa(RenderWindow &ventana)
+{
+	RectangleShape fondo(Vector2f(500, 280));
+	
+	fondo.setPosition(350, 280);
+	fondo.setFillColor(Color(5, 10, 30, 230));
+	fondo.setOutlineColor(Color(0, 150, 255));
+	fondo.setOutlineThickness(4);
+	ventana.draw(fondo);
+	
+	dibujarTexto(ventana, "JUEGO PAUSADO", 450, 320, 38);
+	dibujarTexto(ventana, "El juego esta pausado", 455, 380, 22);
+	
+	RectangleShape botonContinuar(Vector2f(180, 50));
+	botonContinuar.setPosition(510, 450);
+	botonContinuar.setFillColor(Color(20, 100, 130));
+	botonContinuar.setOutlineColor(Color(0, 200, 255));
+	botonContinuar.setOutlineThickness(2);
+	ventana.draw(botonContinuar);
+	
+	dibujarTexto(ventana, "CONTINUAR", 535, 460, 20);
+}
+bool botonContinuarPausaPresionado(int x, int y)
+{
+	return x >= 510 && x <= 690 && y >= 450 && y <= 500;
 }

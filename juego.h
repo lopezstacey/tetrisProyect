@@ -12,15 +12,27 @@
 using namespace sf;
 using namespace std;
 
+struct AnimacionLineas
+{
+	bool activa;
+	bool filas[20];
+	int cantidadFilas;
+	float tiempo;
+	int parpadeo;
+	bool visible;
+};
+
 void hacerHold(Cola &cola, Pila &pilaHold, Pieza &piezaActual);
 void procesarNivel(ColaEventos &eventos, int lineasTotales, int &proximoNivel);
 void procesarEventos(ColaEventos &eventos, int &nivel, float &velocidadCaida, int &puntaje, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo);
 void procesarLineas(ColaEventos &eventos, int filasEliminadas, int &puntaje, int &lineasTotales);
 void procesarBonus(ColaEventos &eventos, int filasEliminadas, int &puntaje, bool bonusActivo);
 void procesarTableroPeligro(ColaEventos &eventos, int lineasTotales, bool &tableroPeligroActivo);
-void procesarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador);
+void procesarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador, AnimacionLineas &animacion);
 void procesarTecla(Keyboard::Key tecla, Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ListaReplay &replay, int &puntaje, int &nivel);
-void procesarCaida(Tablero &tablero, Cola &cola, Pieza &piezaActual, ColaEventos &eventos, Pila &pilaHold, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador);
+void procesarCaida(Tablero &tablero, Cola &cola, Pieza &piezaActual, ColaEventos &eventos, Pila &pilaHold, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador, AnimacionLineas &animacion);
+void iniciarAnimacionLineas(Tablero &tablero, AnimacionLineas &animacion);
+bool actualizarAnimacionLineas(AnimacionLineas &animacion, float tiempoTranscurrido);
 void cargarPuntajes(string nombres[], int puntajes[], int &cantidad);
 void guardarPuntajes(string nombres[], int puntajes[], int cantidad);
 void insertarPuntaje(string nombre, int puntaje, string nombres[], int puntajes[], int &cantidad);
@@ -33,4 +45,5 @@ void prepararReplay(ListaReplay &replay, Tablero &tablero, Pieza &piezaActual, P
 bool avanzarReplayVisual(ListaReplay &replay, Tablero &tablero, Pieza &piezaActual, Pila &pilaHold, int &puntaje, int &nivel);
 bool retrocederReplayVisual(ListaReplay &replay, Tablero &tablero, Pieza &piezaActual, Pila &pilaHold, int &puntaje, int &nivel);
 void reiniciarPartida(Tablero &tablero, Cola &cola, Pila &pilaHold, ColaEventos &eventos, ListaReplay &replay, Pieza &piezaActual, int &puntaje, int &lineasTotales, int &nivel, int &proximoNivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo);
+void finalizarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador);
 #endif

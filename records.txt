@@ -1,4 +1,9 @@
-Mateo        | 2700
-Wendy      | 2700
-Stacey         | 1900
-Isaac         | 1200
+Das    | 3450
+Julio  | 3000
+Hila   | 2900
+Mateo             | 2700
+Wendy           | 2700
+Stacey              | 1900
+Isaac              | 1200
+Wenju | 1000
+Hola     | 100

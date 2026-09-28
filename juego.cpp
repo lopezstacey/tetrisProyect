@@ -41,6 +41,7 @@ void procesarNivel(ColaEventos &eventos, int lineasTotales, int &proximoNivel)
 		proximoNivel += 5;
 	}
 }
+
 void procesarEventos(ColaEventos &eventos, int &nivel, float &velocidadCaida, int &puntaje, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo)
 {
 	while (!colaEventosVacia(eventos))
@@ -52,14 +53,14 @@ void procesarEventos(ColaEventos &eventos, int &nivel, float &velocidadCaida, in
 		{
 			nivel++;
 			
-			if (velocidadCaida > 0.15)
+			if (velocidadCaida > 0.10)
 			{
-				velocidadCaida -= 0.05;
+				velocidadCaida -= 0.08;
 			}
 			
-			if (velocidadCaida < 0.15)
+			if (velocidadCaida < 0.10)
 			{
-				velocidadCaida = 0.15;
+				velocidadCaida = 0.10;
 			}
 		}
 		
@@ -109,10 +110,8 @@ void procesarTableroPeligro(ColaEventos &eventos, int lineasTotales, bool &table
 	}
 }
 
-void procesarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador)
+void finalizarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador)
 {
-	fijarPieza(tablero, piezaActual);
-	
 	int filasEliminadas = eliminarFilasCompletas(tablero);
 	
 	procesarLineas(eventos, filasEliminadas, puntaje, lineasTotales);
@@ -145,12 +144,26 @@ void procesarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza 
 	{
 		gameOver = true;
 		
-		procesarRecord(eventos, nombreJugador,puntaje);
+		procesarRecord(eventos, nombreJugador, puntaje);
 		
 		procesarEventos(eventos, nivel, velocidadCaida, puntaje, nuevoRecord, bonusActivo, tableroPeligroActivo);
 	}
 	
 	guardarEstadoActualReplay(replay, tablero, piezaActual, pilaHold, puntaje, nivel);
+}
+
+void procesarPiezaTerminada(Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ColaEventos &eventos, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador, AnimacionLineas &animacion)
+{
+	fijarPieza(tablero, piezaActual);
+	
+	iniciarAnimacionLineas(tablero, animacion);
+	
+	if (animacion.activa)
+	{
+		return;
+	}
+	
+	finalizarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador);
 }
 
 void procesarTecla(Keyboard::Key tecla, Tablero &tablero, Cola &cola, Pila &pilaHold, Pieza &piezaActual, ListaReplay &replay, int &puntaje, int &nivel)
@@ -202,7 +215,7 @@ void procesarTecla(Keyboard::Key tecla, Tablero &tablero, Cola &cola, Pila &pila
 	}
 }
 
-void procesarCaida(Tablero &tablero, Cola &cola, Pieza &piezaActual, ColaEventos &eventos, Pila &pilaHold, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador)
+void procesarCaida(Tablero &tablero, Cola &cola, Pieza &piezaActual, ColaEventos &eventos, Pila &pilaHold, ListaReplay &replay, int &puntaje, int &lineasTotales, int &proximoNivel, int &nivel, float &velocidadCaida, bool &gameOver, bool &nuevoRecord, bool &bonusActivo, bool &tableroPeligroActivo, string nombreJugador, AnimacionLineas &animacion)
 {
 	bool pudoBajar = moverPiezaAbajo(tablero, piezaActual);
 	
@@ -212,7 +225,7 @@ void procesarCaida(Tablero &tablero, Cola &cola, Pieza &piezaActual, ColaEventos
 	}
 	else
 	{
-		procesarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo,nombreJugador);
+		procesarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador, animacion);
 	}
 }
 
@@ -417,8 +430,16 @@ void guardarEstadoActualReplay(ListaReplay &replay, Tablero &tablero, Pieza &pie
 	{
 		estado.tieneHold = false;
 	}
+	if (replay.actual != nullptr && replay.actual != replay.ultima)
+	{
+		eliminarEstadosSiguientes(replay);
+	}
 	
 	guardarEstadoReplay(replay, estado);
+	
+	replay.actual = replay.ultima;
+	replay.posicion = replay.cantidad - 1;
+
 }
 
 void restaurarEstadoReplay(EstadoReplay estado, Tablero &tablero, Pieza &piezaActual, Pila &pilaHold, int &puntaje, int &nivel)
@@ -444,6 +465,9 @@ void restaurarEstadoReplay(EstadoReplay estado, Tablero &tablero, Pieza &piezaAc
 	if (estado.tieneHold)
 	{
 		apilar(pilaHold, estado.piezaHold);
+	}
+	else
+	{
 	}
 }
 
@@ -517,4 +541,67 @@ void reiniciarPartida(Tablero &tablero, Cola &cola, Pila &pilaHold, ColaEventos 
 	obtenerPieza(cola, 0, piezaActual);
 	
 	guardarEstadoActualReplay(replay, tablero, piezaActual, pilaHold, puntaje, nivel);
+}
+
+void iniciarAnimacionLineas(Tablero &tablero, AnimacionLineas &animacion)
+{
+	int filas[20];
+	int cantidad = obtenerFilasCompletas(tablero, filas);
+	
+	animacion.activa = false;
+	animacion.cantidadFilas = cantidad;
+	animacion.tiempo = 0;
+	animacion.parpadeo = 0;
+	animacion.visible = true;
+	
+	for (int i = 0; i < 20; i++)
+	{
+		animacion.filas[i] = false;
+	}
+	
+	if (cantidad == 0)
+	{
+		return;
+	}
+	
+	for (int i = 0; i < cantidad; i++)
+	{
+		animacion.filas[filas[i]] = true;
+	}
+	
+	animacion.activa = true;
+}
+
+bool actualizarAnimacionLineas(AnimacionLineas &animacion, float tiempoTranscurrido)
+{
+	if (!animacion.activa)
+	{
+		return false;
+	}
+	
+	animacion.tiempo += tiempoTranscurrido;
+	
+	while (animacion.tiempo >= 0.15 && animacion.parpadeo < 4)
+	{
+		animacion.tiempo -= 0.15;
+		animacion.visible = !animacion.visible;
+		animacion.parpadeo++;
+	}
+	
+	if (animacion.parpadeo >= 4)
+	{
+		animacion.activa = false;
+		animacion.visible = true;
+		animacion.tiempo = 0;
+		animacion.parpadeo = 0;
+		animacion.cantidadFilas = 0;
+		
+		for (int i = 0; i < 20; i++)
+		{
+			animacion.filas[i] = false;
+		}
+		return true;
+	}
+	
+	return false;
 }

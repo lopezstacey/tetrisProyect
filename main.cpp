@@ -35,6 +35,7 @@ bool pantallaSeleccionOrdenamiento = false;
 bool pantallaComoJugar = false;
 bool pantallaInformacion = false;
 bool pausado = false;
+AnimacionLineas animacionLineas;
 
 string nombreJugador = "";
 string nombresPuntajes[10];
@@ -72,13 +73,26 @@ int main()
 	inicializarReplay(replay);
 	
 	cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
+	
 	reiniciarPartida(tablero, cola, pilaHold, eventos, replay, piezaActual, puntaje, lineasTotales, nivel, proximoNivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo);
+	
+	animacionLineas.activa = false;
+	animacionLineas.cantidadFilas = 0;
+	animacionLineas.tiempo = 0;
+	animacionLineas.parpadeo = 0;
+	animacionLineas.visible = true;
+	
+	for (int i = 0; i < 20; i++)
+	{
+		animacionLineas.filas[i] = false;
+	}
 	
 	RenderWindow ventana(VideoMode(ANCHO_VENTANA, ALTO_VENTANA), "Tetris");
 	ventana.setFramerateLimit(60);
 	
 	Clock relojCaida;
 	Clock relojReplay;
+	Clock relojLineas;
 	
 	while (ventana.isOpen())
 	{
@@ -127,6 +141,8 @@ int main()
 					{
 						pantallaSeleccionOrdenamiento = false;
 						pantallaPuntajes = false;
+						pantallaComoJugar = false;
+						pantallaInformacion = false;
 						portada = true;
 					}
 				}
@@ -169,17 +185,37 @@ int main()
 						relojReplay.restart();
 					}
 				}
-				else if (!pausado)
+				else if (!pausado && !animacionLineas.activa)
 				{
-					procesarTecla(evento.key.code, tablero, cola, pilaHold, piezaActual, replay, puntaje, nivel);
-					
-					if (evento.key.code == Keyboard::Space)
+					if (evento.key.code == Keyboard::A)
 					{
-						while (moverPiezaAbajo(tablero, piezaActual)) {}
-						
-						procesarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador);
-						
+						retrocederReplayVisual(replay, tablero, piezaActual, pilaHold, puntaje, nivel);
 						relojCaida.restart();
+					}
+					else if (evento.key.code == Keyboard::D)
+					{
+						avanzarReplayVisual(replay, tablero, piezaActual, pilaHold, puntaje, nivel);
+						relojCaida.restart();
+					}
+					else
+					{
+						procesarTecla(evento.key.code, tablero, cola, pilaHold, piezaActual, replay, puntaje, nivel);
+						
+						if (evento.key.code == Keyboard::Space)
+						{
+							while (moverPiezaAbajo(tablero, piezaActual))
+							{
+							}
+							
+							procesarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador, animacionLineas);
+							
+							relojCaida.restart();
+							
+							if (animacionLineas.activa)
+							{
+								relojLineas.restart();
+							}
+						}
 					}
 				}
 			}
@@ -198,6 +234,7 @@ int main()
 						pantallaPuntajes = false;
 						pantallaComoJugar = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaInformacion = false;
 						nombreJugador = "";
 					}
 					else if (botonPuntajesPresionado(x, y))
@@ -216,6 +253,7 @@ int main()
 						pantallaNombre = false;
 						pantallaPuntajes = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaInformacion = false;
 					}
 					else if (botonInformacionPresionado(x, y))
 					{
@@ -242,21 +280,37 @@ int main()
 						
 						reiniciarPartida(tablero, cola, pilaHold, eventos, replay, piezaActual, puntaje, lineasTotales, nivel, proximoNivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo);
 						
+						animacionLineas.activa = false;
+						animacionLineas.cantidadFilas = 0;
+						animacionLineas.tiempo = 0;
+						animacionLineas.parpadeo = 0;
+						animacionLineas.visible = true;
+						
+						for (int i = 0; i < 20; i++)
+						{
+							animacionLineas.filas[i] = false;
+						}
+						
 						pantallaNombre = false;
 						pantallaPuntajes = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaComoJugar = false;
+						pantallaInformacion = false;
 						portada = false;
 						modoReplay = false;
 						reproduciendoReplay = false;
 						pausado = false;
 						
 						relojCaida.restart();
+						relojLineas.restart();
 					}
 					else if (botonRegresarPresionado(x, y, 500, 535))
 					{
 						pantallaNombre = false;
 						pantallaPuntajes = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaComoJugar = false;
+						pantallaInformacion = false;
 						portada = true;
 						nombreJugador = "";
 						pausado = false;
@@ -283,20 +337,26 @@ int main()
 					if (botonInsertionSortPresionado(x, y))
 					{
 						cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
+						
 						auto inicioOrdenamiento = chrono::high_resolution_clock::now();
 						ordenarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
 						auto finOrdenamiento = chrono::high_resolution_clock::now();
+						
 						tiempoOrdenamiento = chrono::duration<double, micro>(finOrdenamiento - inicioOrdenamiento).count();
+						
 						pantallaSeleccionOrdenamiento = false;
 						pantallaPuntajes = true;
 					}
 					else if (botonMergeSortPresionado(x, y))
 					{
 						cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
+						
 						auto inicioOrdenamiento = chrono::high_resolution_clock::now();
 						ordenarPuntajesMerge(nombresPuntajes, puntajes, cantidadPuntajes);
 						auto finOrdenamiento = chrono::high_resolution_clock::now();
+						
 						tiempoOrdenamiento = chrono::duration<double, micro>(finOrdenamiento - inicioOrdenamiento).count();
+						
 						pantallaSeleccionOrdenamiento = false;
 						pantallaPuntajes = true;
 					}
@@ -322,6 +382,7 @@ int main()
 					{
 						cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
 						prepararReplay(replay, tablero, piezaActual, pilaHold, puntaje, nivel);
+						
 						gameOver = false;
 						modoReplay = true;
 						reproduciendoReplay = false;
@@ -329,11 +390,14 @@ int main()
 						pantallaNombre = false;
 						pantallaPuntajes = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaComoJugar = false;
+						pantallaInformacion = false;
 						portada = false;
 					}
 					else if (botonRegresarPresionado(x, y, 630, 460))
 					{
 						cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
+						
 						gameOver = false;
 						modoReplay = false;
 						reproduciendoReplay = false;
@@ -341,6 +405,8 @@ int main()
 						pantallaNombre = false;
 						pantallaPuntajes = false;
 						pantallaSeleccionOrdenamiento = false;
+						pantallaComoJugar = false;
+						pantallaInformacion = false;
 						portada = true;
 					}
 				}
@@ -359,10 +425,21 @@ int main()
 				}
 				else if (!modoReplay && !gameOver)
 				{
-					if (botonPausaPresionado(x, y))
+					if (pausado)
 					{
-						pausado = !pausado;
-						relojCaida.restart();
+						if (botonContinuarPausaPresionado(x, y))
+						{
+							pausado = false;
+							relojCaida.restart();
+						}
+					}
+					else
+					{
+						if (botonPausaPresionado(x, y))
+						{
+							pausado = true;
+							relojCaida.restart();
+						}
 					}
 				}
 			}
@@ -370,10 +447,31 @@ int main()
 		
 		if (!portada && !pantallaNombre && !pantallaSeleccionOrdenamiento && !pantallaPuntajes && !gameOver && !modoReplay && !pausado)
 		{
-			if (relojCaida.getElapsedTime().asSeconds() >= velocidadCaida)
+			if (animacionLineas.activa)
 			{
-				procesarCaida(tablero, cola, piezaActual, eventos, pilaHold, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador);
+				float tiempoTranscurrido = relojLineas.restart().asSeconds();
+				
+				if (actualizarAnimacionLineas(animacionLineas, tiempoTranscurrido))
+				{
+					finalizarPiezaTerminada(tablero, cola, pilaHold, piezaActual, eventos, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador);
+					relojLineas.restart();
+					relojCaida.restart();
+					
+					if (gameOver)
+					{
+						cargarPuntajes(nombresPuntajes, puntajes, cantidadPuntajes);
+					}
+				}
+			}
+			else if (relojCaida.getElapsedTime().asSeconds() >= velocidadCaida)
+			{
+				procesarCaida(tablero, cola, piezaActual, eventos, pilaHold, replay, puntaje, lineasTotales, proximoNivel, nivel, velocidadCaida, gameOver, nuevoRecord, bonusActivo, tableroPeligroActivo, nombreJugador, animacionLineas);
 				relojCaida.restart();
+				
+				if (animacionLineas.activa)
+				{
+					relojLineas.restart();
+				}
 				
 				if (gameOver)
 				{
@@ -423,9 +521,21 @@ int main()
 		}
 		else
 		{
+			int filasAnimando[20];
+			int cantidadFilasAnimando = 0;
+			
+			for (int i = 0; i < 20; i++)
+			{
+				if (animacionLineas.filas[i])
+				{
+					filasAnimando[cantidadFilasAnimando] = i;
+					cantidadFilasAnimando++;
+				}
+			}
+			
 			dibujarFondo(ventana);
 			dibujarMarcoTablero(ventana);
-			dibujarTablero(ventana, tablero, piezaActual, tableroPeligroActivo);
+			dibujarTablero(ventana, tablero, piezaActual, tableroPeligroActivo, filasAnimando, cantidadFilasAnimando, animacionLineas.visible);
 			dibujarPanelHold(ventana);
 			dibujarPanelSiguientes(ventana);
 			dibujarPanelPuntaje(ventana);
@@ -433,7 +543,14 @@ int main()
 			
 			if (!modoReplay && !gameOver)
 			{
-				dibujarBotonPausa(ventana, pausado);
+				if (!pausado)
+				{
+					dibujarBotonPausa(ventana, pausado);
+				}
+				else
+				{
+					dibujarPausa(ventana);
+				}
 			}
 			
 			dibujarHold(ventana, pilaHold);
@@ -455,6 +572,9 @@ int main()
 	
 	limpiarTablero(tablero);
 	limpiarReplay(replay);
+	limpiarCola(cola);
+	limpiarPila(pilaHold);
+	limpiarEventos(eventos);
 	
 	return 0;
 }

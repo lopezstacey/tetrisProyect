@@ -31,6 +31,29 @@ void guardarEstadoReplay(ListaReplay &lista, EstadoReplay estado)
 	lista.cantidad++;
 }
 
+void eliminarEstadosSiguientes(ListaReplay &lista)
+{
+	if (lista.actual == nullptr)
+	{
+		return;
+	}
+	
+	NodoReplay *actual = lista.actual->siguiente;
+	
+	while (actual != nullptr)
+	{
+		NodoReplay *siguiente = actual->siguiente;
+		
+		delete actual;
+		
+		lista.cantidad--;
+		actual = siguiente;
+	}
+	
+	lista.actual->siguiente = nullptr;
+	lista.ultima = lista.actual;
+}
+
 void iniciarReplay(ListaReplay &lista)
 {
 	lista.posicion = -1;
